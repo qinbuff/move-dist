@@ -127,22 +127,11 @@ async function uploadZip(distZipPath) {
   }
 };
 
-let timer = null; 
 //【监听部分】 监听 dist 文件夹 部分
 fs.watch(sourceDir, { recursive: true }, (event, filename) => {
   if (filename !== watchFileName) {
     return;
   }
-  clearTimeout(timer)
-  // 这一段用来测试打印 计算得出下面的 10s,我这边应该是8S左右，目前没有一个好一点 简单一点 的办法监听dist文件夹里面的东西完全生成成功
-  console.log(
-    `[${new Date().toLocaleString()}]: 检测到 ${watchFileName} 文件夹变化，开始打印`
-  );
-
-  timer = setTimeout(() => {
-    console.log(
-      `[${new Date().toLocaleString()}]: 检测到 ${watchFileName} 文件夹变化，开始压缩...`
-    );
-    compress();
-  }, 10000); // 延迟 10s 后压缩，如果没有变化就正常进行压缩
+  // 监听到dist 目录有重新变化 60s后自动打包 确保dist 里面文件全部生成完毕
+  setTimeout(compress, 60 * 1000); 
 });
